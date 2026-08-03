@@ -23,7 +23,7 @@ export const Route = createFileRoute("/faq")({
   component: Faq,
 });
 
-const faqs = [
+const faqs: [string, string][] = [
   [
     "Shipping",
     "Orders are handmade and dispatched within 3–5 business days. Standard delivery takes 3–7 days; express options are available at checkout.",
