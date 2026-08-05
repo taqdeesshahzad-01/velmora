@@ -121,9 +121,9 @@ function Home() {
           <p className="mt-10 text-center text-sm text-muted-foreground">
             We couldn't load our nails just now. Please refresh in a moment.
           </p>
-        ) : bestSellers.length === 0 ? (
+) : bestSellers.length === 0 ? (
           <p className="mt-10 text-center text-sm text-muted-foreground">
-            New sets are being hand-finished right now — check back very soon.
+            Our new collection is being crafted — check back very soon.
           </p>
         ) : (
           <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
