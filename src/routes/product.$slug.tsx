@@ -10,15 +10,40 @@ import {
 } from "@/components/ui/dialog";
 import { ProductCard } from "@/components/ProductCard";
 import { SectionHeading } from "@/components/SectionHeading";
-import { getProduct, products } from "@/data/products";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { productQueryOptions, productsQueryOptions } from "@/lib/products";
 import { useCart } from "@/lib/cart";
 
 export const Route = createFileRoute("/product/$slug")({
-  loader: ({ params }) => {
-    const product = getProduct(params.slug);
+  loader: async ({ context, params }) => {
+    const product = await context.queryClient.ensureQueryData(
+      productQueryOptions(params.slug),
+    );
     if (!product) throw notFound();
     return product;
   },
+  pendingComponent: () => (
+    <div className="mx-auto max-w-6xl px-5 py-14">
+      <div className="grid animate-pulse gap-10 md:grid-cols-2">
+        <div className="aspect-[4/5] w-full rounded-3xl bg-secondary" />
+        <div className="space-y-4">
+          <div className="h-9 w-2/3 rounded bg-secondary" />
+          <div className="h-4 w-1/4 rounded bg-secondary" />
+          <div className="h-24 w-full rounded bg-secondary" />
+        </div>
+      </div>
+    </div>
+  ),
+  errorComponent: () => (
+    <div className="mx-auto max-w-6xl px-5 py-24 text-center text-sm text-muted-foreground">
+      We couldn't load this set just now. Please refresh in a moment.
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-6xl px-5 py-24 text-center text-sm text-muted-foreground">
+      This set isn't available right now.
+    </div>
+  ),
   head: ({ loaderData }) => {
     if (!loaderData)
       return { meta: [{ title: "Not found | Lumière Nails" }, { name: "robots", content: "noindex" }] };
@@ -38,9 +63,13 @@ export const Route = createFileRoute("/product/$slug")({
 });
 
 function ProductPage() {
-  const product = Route.useLoaderData();
+  const { slug } = Route.useParams();
+  const { data } = useSuspenseQuery(productQueryOptions(slug));
+  const loaded = Route.useLoaderData();
+  const product = data ?? loaded;
   const { add } = useCart();
-  const related = products.filter((p) => p.slug !== product.slug).slice(0, 3);
+  const { data: all = [] } = useQuery(productsQueryOptions);
+  const related = all.filter((p) => p.slug !== product.slug).slice(0, 3);
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-14">
