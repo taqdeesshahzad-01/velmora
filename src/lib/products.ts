@@ -53,34 +53,74 @@ function mapRow(row: Row): ProductDetail {
     description: row.description ?? "",
   };
 }
+// ---------------------------------------------------------------------
+// export async function fetchProducts(): Promise<ProductDetail[]> {
+//   const { data, error } = await supabase
+//     .from("products")
+//     .select(SELECT)
+//     .eq("active", true)
+//     .order("created_at", { ascending: false });
+
+//   console.log("SUPABASE DATA:", data);
+//   console.log("SUPABASE ERROR:", error);
+
+//   if (error) throw new Error(error.message);
+
+//   return ((data ?? []) as unknown as Row[]).map(mapRow);
+// }
+
+// export async function fetchProductBySlug(slug: string): Promise<ProductDetail | null> {
+//   const { data, error } = await supabase
+//     .from("products")
+//     .select(SELECT)
+//     .eq("active", true)
+//     .eq("slug", slug)
+//     .maybeSingle();
+
+//   if (error) throw new Error(error.message);
+//   return data ? mapRow(data as unknown as Row) : null;
+// }
+// ------------------------------------------------------------
 
 export async function fetchProducts(): Promise<ProductDetail[]> {
+  console.log("===== FETCH PRODUCTS START =====");
+
   const { data, error } = await supabase
     .from("products")
     .select(SELECT)
     .eq("active", true)
     .order("created_at", { ascending: false });
 
-  console.log("SUPABASE DATA:", data);
   console.log("SUPABASE ERROR:", error);
+  console.log("RAW DATA:", data);
 
-  if (error) throw new Error(error.message);
+  if (data) {
+    console.table(data);
+  }
 
-  return ((data ?? []) as unknown as Row[]).map(mapRow);
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const mapped = ((data ?? []) as Row[]).map(mapRow);
+
+  console.log("MAPPED PRODUCTS:", mapped);
+
+  console.table(
+    mapped.map((p) => ({
+      name: p.name,
+      featured: p.bestSeller,
+      active: true,
+      image: p.image,
+      shape: p.shape,
+      length: p.length,
+    }))
+  );
+
+  console.log("===== FETCH PRODUCTS END =====");
+
+  return mapped;
 }
-
-export async function fetchProductBySlug(slug: string): Promise<ProductDetail | null> {
-  const { data, error } = await supabase
-    .from("products")
-    .select(SELECT)
-    .eq("active", true)
-    .eq("slug", slug)
-    .maybeSingle();
-
-  if (error) throw new Error(error.message);
-  return data ? mapRow(data as unknown as Row) : null;
-}
-
 export const productsQueryOptions = queryOptions({
   queryKey: ["products"],
   queryFn: fetchProducts,
