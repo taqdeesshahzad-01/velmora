@@ -57,7 +57,7 @@ function Home() {
             Handmade in small batches
           </p>
           <h1 className="mt-4 font-display text-4xl leading-tight text-foreground sm:text-6xl">
-            Salon-worthy nails, <em className="not-italic text-accent-foreground">made by hand.</em>
+            Salon-worthy nails, <em className="not-italic text-accent-foreground">made by hand ✨</em>
           </h1>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
             Lumière press-on nails bring the polish of a luxury salon to your dressing table —
