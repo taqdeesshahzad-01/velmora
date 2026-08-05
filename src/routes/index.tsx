@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ProductCard } from "@/components/ProductCard";
-import { collections, products } from "@/data/products";
+import { useQuery } from "@tanstack/react-query";
+import { collections } from "@/data/products";
+import { productsQueryOptions } from "@/lib/products";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -44,6 +46,8 @@ const testimonials = [
 
 function Home() {
   const [email, setEmail] = useState("");
+  const { data: products = [], isLoading, isError } = useQuery(productsQueryOptions);
+  const bestSellers = products.filter((p) => p.bestSeller);
 
   return (
     <>
@@ -104,13 +108,30 @@ function Home() {
 
       <section className="mx-auto max-w-6xl px-5 py-16">
         <SectionHeading eyebrow="Loved by you" title="Best Sellers" />
-        <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {products
-            .filter((p) => p.bestSeller)
-            .map((p) => (
+        {isLoading ? (
+          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-[4/5] w-full rounded-2xl bg-secondary" />
+                <div className="mt-3 h-4 w-2/3 rounded bg-secondary" />
+              </div>
+            ))}
+          </div>
+        ) : isError ? (
+          <p className="mt-10 text-center text-sm text-muted-foreground">
+            We couldn't load our nails just now. Please refresh in a moment.
+          </p>
+        ) : bestSellers.length === 0 ? (
+          <p className="mt-10 text-center text-sm text-muted-foreground">
+            New sets are being hand-finished right now — check back very soon.
+          </p>
+        ) : (
+          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {bestSellers.map((p) => (
               <ProductCard key={p.slug} product={p} />
             ))}
-        </div>
+          </div>
+        )}
       </section>
 
       <section className="bg-secondary/40 py-16">

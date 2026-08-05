@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ProductCard } from "@/components/ProductCard";
-import { products } from "@/data/products";
+import { useQuery } from "@tanstack/react-query";
+import { productsQueryOptions } from "@/lib/products";
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -66,6 +67,7 @@ function FilterRow({
 
 function Shop() {
   const { collection } = Route.useSearch();
+  const { data: products = [], isLoading, isError } = useQuery(productsQueryOptions);
   const [query, setQuery] = useState("");
   const [shape, setShape] = useState(ALL);
   const [length, setLength] = useState(ALL);
@@ -83,7 +85,7 @@ function Shop() {
         priceTest(p.price) &&
         p.name.toLowerCase().includes(query.trim().toLowerCase()),
     );
-  }, [collection, shape, length, color, price, query]);
+  }, [products, collection, shape, length, color, price, query]);
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-14">
@@ -115,15 +117,36 @@ function Shop() {
         />
       </div>
 
-      <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {results.map((p) => (
-          <ProductCard key={p.slug} product={p} />
-        ))}
-      </div>
-      {results.length === 0 && (
+      {isLoading ? (
+        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="aspect-[4/5] w-full rounded-2xl bg-secondary" />
+              <div className="mt-3 h-4 w-2/3 rounded bg-secondary" />
+            </div>
+          ))}
+        </div>
+      ) : isError ? (
         <p className="mt-12 text-center text-sm text-muted-foreground">
-          No sets match those filters yet.
+          We couldn't load the collection just now. Please refresh in a moment.
         </p>
+      ) : products.length === 0 ? (
+        <p className="mt-12 text-center text-sm text-muted-foreground">
+          Our shelves are being restocked — new handmade sets are coming very soon.
+        </p>
+      ) : (
+        <>
+          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {results.map((p) => (
+              <ProductCard key={p.slug} product={p} />
+            ))}
+          </div>
+          {results.length === 0 && (
+            <p className="mt-12 text-center text-sm text-muted-foreground">
+              No sets match those filters yet.
+            </p>
+          )}
+        </>
       )}
     </div>
   );
