@@ -61,7 +61,11 @@ export async function fetchProducts(): Promise<ProductDetail[]> {
     .eq("active", true)
     .order("created_at", { ascending: false });
 
+  console.log("SUPABASE DATA:", data);
+  console.log("SUPABASE ERROR:", error);
+
   if (error) throw new Error(error.message);
+
   return ((data ?? []) as unknown as Row[]).map(mapRow);
 }
 
