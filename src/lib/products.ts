@@ -69,17 +69,17 @@ function mapRow(row: Row): ProductDetail {
 //   return ((data ?? []) as unknown as Row[]).map(mapRow);
 // }
 
-// export async function fetchProductBySlug(slug: string): Promise<ProductDetail | null> {
-//   const { data, error } = await supabase
-//     .from("products")
-//     .select(SELECT)
-//     .eq("active", true)
-//     .eq("slug", slug)
-//     .maybeSingle();
+export async function fetchProductBySlug(slug: string): Promise<ProductDetail | null> {
+  const { data, error } = await supabase
+    .from("products")
+    .select(SELECT)
+    .eq("active", true)
+    .eq("slug", slug)
+    .maybeSingle();
 
-//   if (error) throw new Error(error.message);
-//   return data ? mapRow(data as unknown as Row) : null;
-// }
+  if (error) throw new Error(error.message);
+  return data ? mapRow(data as unknown as Row) : null;
+}
 // ------------------------------------------------------------
 
 export async function fetchProducts(): Promise<ProductDetail[]> {
