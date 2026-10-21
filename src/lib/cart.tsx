@@ -26,7 +26,7 @@ type CartCtx = {
 };
 
 const Ctx = createContext<CartCtx | null>(null);
-const KEY = "lumiere-cart";
+const KEY = "velmora-cart";
 
 function isSameLine(item: CartItem, slug: string, variantId: string | null) {
   return item.slug === slug && item.variantId === variantId;

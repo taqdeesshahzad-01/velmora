@@ -1,4 +1,4 @@
-# Lumière Nails — CLAUDE.md
+# VELMORA — CLAUDE.md
 
 Press-on nail ecommerce site. Lovable-generated codebase — treat existing structure as authoritative.
 

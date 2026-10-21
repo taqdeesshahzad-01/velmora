@@ -1,4 +1,4 @@
-# Luxe Nail Studio
+# VELMORA
 
 You are an expert UI/UX designer, senior full-stack developer, and conversion-focused eCommerce strategist.
 
