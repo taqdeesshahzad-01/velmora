@@ -1,450 +1,84 @@
 # VELMORA
 
-You are an expert UI/UX designer, senior full-stack developer, and conversion-focused eCommerce strategist.
+**Premium E-Commerce Storefront & Admin Panel**
 
-Your mission is to build Version 1 of a professional, production-ready website for a female-owned Press-on Nail business.
+> **Portfolio demonstration only.** VELMORA is not a real business and does not accept or fulfil real orders. See the [Demo Disclaimer](#demo-disclaimer).
 
-IMPORTANT:
+## Project Overview
 
-This is an MVP built under limited AI generation credits.
+VELMORA is a full-stack portfolio project that demonstrates a modern e-commerce workflow for a press-on nail brand. It covers the whole path from browsing to fulfilment: a product catalogue with variants, a persistent custom cart, a validated Cash on Delivery checkout with server-side order creation, and a secure admin dashboard for managing orders, products and inventory.
 
-Optimize for minimal token usage.
+## Tech Stack
 
-Do NOT over-engineer.
+- **React 19** and **TypeScript**
+- **Vite** for development and builds
+- **TanStack Router / TanStack Start** for file-based routing and server functions, with **TanStack Query** for data fetching
+- **Nitro** as the server build layer
+- **Supabase**
+  - **Postgres** with row-level security
+  - **Auth** for admin sign-in
+  - **Storage** for product images
+- **Tailwind CSS v4** and **shadcn/ui** for styling and components
 
-Do NOT generate unnecessary code.
+## Key Features
 
-Do NOT add features that weren't requested.
+### Storefront
 
-Reuse components wherever possible.
+- Product catalogue with search and filters (shape, length, colour, price) and collection links
+- Variant selection (colour, shape, length, size) with live stock status; unavailable combinations cannot be added
+- Cart that persists across page reloads
+- Cash on Delivery checkout with field-level validation, duplicate-submit protection and clear loading, success and error states
+- Orders are created on the server, which validates stock and decrements inventory
+- Responsive layout checked from 375 px to 1440 px, with visible keyboard focus and labelled form fields
 
-Keep architecture clean and scalable.
+### Admin Dashboard
 
-======================================================
+- Sign-in with Supabase Auth; admin routes redirect to the login page when signed out
+- Every admin data call is authorised on the server, so the client-side redirect is a convenience and not the security boundary
+- Dashboard with order counts, pending orders, revenue and low-stock alerts
+- Order management: search and filter, view order details, and update order status (pending, confirmed, processing, shipped, delivered, cancelled) with a confirmation step
+- Product management: edit name, description, category, price, and the active and featured flags
+- Inventory management: update stock per variant, with low-stock indicators
 
-BUSINESS
+## Environment Variables
 
-======================================================
+Create a `.env` file in the project root (it is git-ignored) with these five variables. **Never commit real values.**
 
-Business Type:
+| Variable                        | Used by                  | Notes                                           |
+| ------------------------------- | ------------------------ | ----------------------------------------------- |
+| `VITE_SUPABASE_URL`             | Browser                  | Supabase project URL                            |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Browser                  | Public (publishable) key                        |
+| `SUPABASE_URL`                  | Server                   | Supabase project URL                            |
+| `SUPABASE_PUBLISHABLE_KEY`      | Server                   | Public (publishable) key                        |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Server only              | Secret. Never prefix with `VITE_`; never expose |
 
-Luxury Handmade Press-On Nails
+The service-role key is read only inside server functions and must never reach the client bundle.
 
-Target Audience:
+## Local Development
 
-Women aged 16–40 who want salon-quality nails at home.
+1. Clone the repository and move into the folder.
 
-Brand Personality:
+   ```bash
+   git clone https://github.com/taqdeesshahzad-01/velmora.git
+   cd velmora
+   ```
 
-Elegant
+2. Install dependencies.
 
-Modern
+   ```bash
+   bun install
+   ```
 
-Feminine
+3. Create `.env` with the variables listed above, using your own Supabase project. The database schema is in `supabase/migrations/`.
 
-Minimal
+4. Start the development server and open the local URL it prints.
 
-Luxury
+   ```bash
+   bun run dev
+   ```
 
-Trustworthy
+Other commands: `bun run build` (production build) and `bun run lint`.
 
-Color Palette:
+## Demo Disclaimer
 
-White
-
-Soft Pink
-
-Nude
-
-Rose Gold accents
-
-Very clean spacing
-
-Typography:
-
-Modern elegant fonts.
-
-Avoid playful or childish fonts.
-
-Overall Feel:
-
-Premium boutique brand similar to luxury beauty brands.
-
-======================================================
-
-WEBSITE GOALS
-
-======================================================
-
-1. Showcase products beautifully.
-
-2. Build trust.
-
-3. Allow customers to order easily.
-
-4. Work perfectly on mobile.
-
-5. Fast loading.
-
-6. Clean codebase.
-
-7. Easy to expand later.
-
-======================================================
-
-PAGES
-
-======================================================
-
-Only create these pages.
-
-1. Home
-
-2. Shop
-
-3. Product Details
-
-4. About
-
-5. FAQ
-
-6. Contact
-
-No blog.
-
-No dashboard.
-
-No customer accounts.
-
-No admin panel.
-
-No wishlist.
-
-No reviews system.
-
-No loyalty program.
-
-No AI features.
-
-No unnecessary pages.
-
-======================================================
-
-HOME PAGE
-
-======================================================
-
-Hero Section
-
-- Beautiful press-on nail image placeholder
-
-- Luxury headline
-
-- Short brand description
-
-- Shop Now button
-
-Featured Collections
-
-Best Sellers
-
-Why Choose Us
-
-- Handmade
-
-- Reusable
-
-- Salon Quality
-
-- Affordable
-
-- Easy Application
-
-How It Works
-
-Step 1
-
-Choose Design
-
-Step 2
-
-Select Size
-
-Step 3
-
-Apply
-
-Step 4
-
-Enjoy
-
-Testimonials
-
-Use placeholder reviews.
-
-Instagram Preview
-
-Static placeholders only.
-
-Newsletter signup
-
-Footer
-
-======================================================
-
-SHOP PAGE
-
-======================================================
-
-Simple product grid.
-
-Filters:
-
-- Shape
-
-- Length
-
-- Color
-
-- Price
-
-Search bar.
-
-Pagination if needed.
-
-======================================================
-
-PRODUCT PAGE
-
-======================================================
-
-Large product images
-
-Product title
-
-Price
-
-Description
-
-What's Included
-
-Nail Shape
-
-Length
-
-Size Guide button
-
-Add to Cart
-
-Related Products
-
-======================================================
-
-ABOUT PAGE
-
-======================================================
-
-Founder story
-
-Mission
-
-Brand values
-
-======================================================
-
-FAQ
-
-======================================================
-
-Expandable accordion.
-
-Questions:
-
-Shipping
-
-Sizing
-
-Application
-
-Removal
-
-Returns
-
-Care
-
-======================================================
-
-CONTACT
-
-======================================================
-
-Contact form
-
-Email
-
-Instagram placeholder
-
-WhatsApp placeholder
-
-======================================================
-
-COMPONENTS
-
-======================================================
-
-Reusable Navbar
-
-Reusable Footer
-
-Reusable Product Card
-
-Reusable Button
-
-Reusable Section Heading
-
-Reusable Cards
-
-Reusable FAQ Accordion
-
-======================================================
-
-DESIGN RULES
-
-======================================================
-
-Minimal luxury aesthetic.
-
-Lots of white space.
-
-Rounded cards.
-
-Soft shadows.
-
-Smooth but subtle hover effects.
-
-Responsive on:
-
-Desktop
-
-Tablet
-
-Mobile
-
-Accessibility friendly.
-
-======================================================
-
-IMAGES
-
-======================================================
-
-Use placeholder images.
-
-Do NOT generate AI images.
-
-Leave image slots easy to replace later.
-
-======================================================
-
-TECHNICAL
-
-======================================================
-
-Create clean reusable components.
-
-Avoid duplicate code.
-
-Organize files logically.
-
-Optimize for performance.
-
-No unnecessary dependencies.
-
-No complex animations.
-
-No excessive JavaScript.
-
-Keep CSS clean.
-
-======================================================
-
-SHOPPING
-
-======================================================
-
-Implement simple shopping cart.
-
-Allow:
-
-Add to cart
-
-Update quantity
-
-Remove item
-
-Cart total
-
-Checkout button
-
-Checkout can be a placeholder.
-
-======================================================
-
-SEO
-
-======================================================
-
-Basic SEO only.
-
-Meaningful page titles.
-
-Meta descriptions.
-
-Semantic HTML.
-
-======================================================
-
-COPYWRITING
-
-======================================================
-
-Use elegant beauty-industry placeholder copy.
-
-Keep text concise.
-
-======================================================
-
-OUTPUT
-
-======================================================
-
-Generate the entire MVP in one pass.
-
-Avoid asking follow-up questions.
-
-Make sensible assumptions where information is missing.
-
-Prioritize completing a polished, professional Version 1 instead of adding advanced features.
-
-The website should feel like a real luxury beauty brand ready for launch.
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/3c208df7-ab10-455f-93ba-44f5c82ade96).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+VELMORA is a **portfolio demonstration project, not a real business**. `DEMO_MODE` is **active** (set in `src/lib/utils.ts`), so the site shows demo notices, and any order placed is a test order that will not be fulfilled. Product names, prices and stock are sample data. Contact details, delivery terms and returns policies have intentionally not been published.
