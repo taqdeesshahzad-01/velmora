@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -6,36 +6,42 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { ProductCard } from "@/components/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import { productsQueryOptions } from "@/lib/products";
+import { formatPKR } from "@/lib/utils";
 
 export const Route = createFileRoute("/shop")({
-  validateSearch: (s: Record<string, unknown>) => ({
-    collection: typeof s['collection'] === "string" ? (s['collection'] as string) : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): { collection?: string } =>
+    typeof s["collection"] === "string" ? { collection: s["collection"] } : {},
   head: () => ({
     meta: [
-      { title: "Shop Press-On Nails | Lumière Nails" },
+      { title: "Shop Press-On Nails | VELMORA" },
       {
         name: "description",
-        content:
-          "Browse handmade press-on nail sets by shape, length, colour and price. Reusable and salon-quality.",
+        content: "Browse VELMORA press-on nail sets by shape, length, colour and price.",
       },
-      { property: "og:title", content: "Shop Press-On Nails | Lumière Nails" },
-      { property: "og:description", content: "Handmade, reusable press-on nail sets." },
+      { property: "og:title", content: "Shop Press-On Nails | VELMORA" },
+      { property: "og:description", content: "Press-on nail sets by shape, length, colour and price." },
     ],
   }),
   component: Shop,
 });
 
 const ALL = "All";
-const shapes = [ALL, "Almond", "Coffin", "Square", "Stiletto"];
-const lengths = [ALL, "Short", "Medium", "Long"];
-const colors = [ALL, "Nude", "Pink", "White", "Red", "Chrome"];
+const PRICE_BUCKET_1 = 2500;
+const PRICE_BUCKET_2 = 5000;
 const prices = [
   { label: ALL, test: () => true },
-  { label: "Under $32", test: (p: number) => p < 32 },
-  { label: "$32 – $40", test: (p: number) => p >= 32 && p <= 40 },
-  { label: "Over $40", test: (p: number) => p > 40 },
+  { label: `Under ${formatPKR(PRICE_BUCKET_1)}`, test: (p: number) => p < PRICE_BUCKET_1 },
+  {
+    label: `${formatPKR(PRICE_BUCKET_1)} – ${formatPKR(PRICE_BUCKET_2)}`,
+    test: (p: number) => p >= PRICE_BUCKET_1 && p <= PRICE_BUCKET_2,
+  },
+  { label: `Over ${formatPKR(PRICE_BUCKET_2)}`, test: (p: number) => p > PRICE_BUCKET_2 },
 ];
+
+function distinctFilterValues(products: { color: string; shape: string; length: string }[], key: "color" | "shape" | "length") {
+  const present = new Set(products.map((p) => p[key]).filter((v): v is string => !!v));
+  return [ALL, ...Array.from(present).sort()];
+}
 
 function FilterRow({
   label,
@@ -49,18 +55,28 @@ function FilterRow({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="w-16 text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</span>
-      {options.map((o) => (
-        <Button
-          key={o}
-          size="sm"
-          variant={value === o ? "default" : "outline"}
-          onClick={() => onChange(o)}
-        >
-          {o}
-        </Button>
-      ))}
+    <div className="sm:flex sm:items-center sm:gap-3">
+      <span className="block text-xs uppercase tracking-[0.18em] text-muted-foreground sm:w-16 sm:shrink-0">
+        {label}
+      </span>
+      <div
+        role="group"
+        aria-label={`Filter by ${label.toLowerCase()}`}
+        className="-mx-5 mt-1.5 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:mt-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0"
+      >
+        {options.map((o) => (
+          <Button
+            key={o}
+            size="sm"
+            variant={value === o ? "default" : "outline"}
+            aria-pressed={value === o}
+            className="h-9 shrink-0 px-4"
+            onClick={() => onChange(o)}
+          >
+            {o}
+          </Button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -73,6 +89,10 @@ function Shop() {
   const [length, setLength] = useState(ALL);
   const [color, setColor] = useState(ALL);
   const [price, setPrice] = useState(ALL);
+
+  const colors = useMemo(() => distinctFilterValues(products, "color"), [products]);
+  const shapes = useMemo(() => distinctFilterValues(products, "shape"), [products]);
+  const lengths = useMemo(() => distinctFilterValues(products, "length"), [products]);
 
   const results = useMemo(() => {
     const priceTest = prices.find((p) => p.label === price)!.test;
@@ -87,15 +107,28 @@ function Shop() {
     );
   }, [products, collection, shape, length, color, price, query]);
 
+  const navigate = useNavigate();
+  const hasFilters =
+    !!collection || !!query.trim() || shape !== ALL || length !== ALL || color !== ALL || price !== ALL;
+
+  function clearFilters() {
+    setQuery("");
+    setShape(ALL);
+    setLength(ALL);
+    setColor(ALL);
+    setPrice(ALL);
+    if (collection) navigate({ to: "/shop", search: {} });
+  }
+
   return (
-    <div className="mx-auto max-w-6xl px-5 py-14">
+    <div className="mx-auto max-w-6xl px-5 py-12 md:py-16">
       <SectionHeading
-        eyebrow={collection ? `${collection} collection` : "The Collection"}
+        eyebrow={collection ? `${collection}` : "The Collection"}
         title="Shop All Nails"
-        subtitle="Handmade sets, ready to wear in minutes."
+        subtitle="Browse every set by shape, length, colour and price."
       />
 
-      <div className="mt-10 space-y-3">
+      <div className="mt-10 space-y-4 rounded-2xl border border-border bg-card p-5">
         <label className="sr-only" htmlFor="search">
           Search products
         </label>
@@ -104,7 +137,7 @@ function Shop() {
           placeholder="Search designs…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="max-w-sm"
+          className="h-11 max-w-sm text-base"
         />
         <FilterRow label="Shape" options={shapes} value={shape} onChange={setShape} />
         <FilterRow label="Length" options={lengths} value={length} onChange={setLength} />
@@ -117,8 +150,21 @@ function Shop() {
         />
       </div>
 
+      {!isLoading && !isError && products.length > 0 && (
+        <div className="mt-6 flex items-center justify-between text-sm text-muted-foreground">
+          <p aria-live="polite">
+            {results.length} {results.length === 1 ? "set" : "sets"}
+          </p>
+          {hasFilters && (
+            <Button variant="link" size="sm" className="h-auto p-0" onClick={clearFilters}>
+              Clear filters
+            </Button>
+          )}
+        </div>
+      )}
+
       {isLoading ? (
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid grid-cols-2 gap-5 sm:gap-8 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="animate-pulse">
               <div className="aspect-[4/5] w-full rounded-2xl bg-secondary" />
@@ -132,19 +178,22 @@ function Shop() {
         </p>
       ) : products.length === 0 ? (
         <p className="mt-12 text-center text-sm text-muted-foreground">
-          Our shelves are being restocked — new handmade sets are coming very soon.
+          New sets are on the way — please check back soon.
         </p>
       ) : (
         <>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-2 gap-5 sm:gap-8 lg:grid-cols-3">
             {results.map((p) => (
               <ProductCard key={p.slug} product={p} />
             ))}
           </div>
           {results.length === 0 && (
-            <p className="mt-12 text-center text-sm text-muted-foreground">
-              No sets match those filters yet.
-            </p>
+            <div className="mt-12 text-center">
+              <p className="text-sm text-muted-foreground">No sets match those filters yet.</p>
+              <Button variant="outline" className="mt-4" onClick={clearFilters}>
+                Clear filters
+              </Button>
+            </div>
           )}
         </>
       )}

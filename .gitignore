@@ -30,3 +30,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.env
+.env.*
+!.env.example
+
+# Claude Code local config
+.claude/
+
+# Supabase CLI local state
+supabase/.temp/

@@ -50,7 +50,7 @@ export function Navbar() {
         </div>
 
         <Link to="/" className="font-display text-2xl tracking-[0.2em] text-foreground">
-          LUMIÈRE
+          VELMORA
         </Link>
 
         <ul className="hidden items-center gap-8 md:flex">

@@ -125,6 +125,13 @@
     font-family: var(--font-display);
     font-weight: 300;
   }
+
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
 }
 
 @utility card-soft {

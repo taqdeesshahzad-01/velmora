@@ -1,8 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ProductCard } from "@/components/ProductCard";
 import { useQuery } from "@tanstack/react-query";
@@ -12,16 +9,16 @@ import { productsQueryOptions } from "@/lib/products";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Lumière Nails | Luxury Handmade Press-On Nails" },
+      { title: "VELMORA | Press-On Nails" },
       {
         name: "description",
         content:
-          "Salon-quality handmade press-on nails. Reusable, easy to apply and crafted in small batches.",
+          "VELMORA press-on nail sets in soft nudes, deep jewel tones and fine details. Choose your shape, length and size.",
       },
-      { property: "og:title", content: "Lumière Nails | Luxury Press-On Nails" },
+      { property: "og:title", content: "VELMORA | Press-On Nails" },
       {
         property: "og:description",
-        content: "Salon-quality handmade press-on nails, crafted in small batches.",
+        content: "Press-on nail sets in soft nudes, deep jewel tones and fine details.",
       },
     ],
   }),
@@ -29,87 +26,123 @@ export const Route = createFileRoute("/")({
 });
 
 const reasons = [
-  ["Handmade", "Each set is shaped and finished by hand."],
-  ["Reusable", "Wear your favourites again and again."],
-  ["Salon Quality", "Gel-cured shine that lasts up to 14 days."],
-  ["Affordable", "Luxury finish without the salon price."],
-  ["Easy Application", "Ready to wear in under 10 minutes."],
+  ["Considered Designs", "Each set is a finished look, defined by its colour, finish, shape and length."],
+  ["Choose Your Fit", "Select from the shapes, lengths and sizes offered on each product page."],
+  ["Clear Availability", "Stock is shown for the exact option you pick, before you add it to your bag."],
 ];
 
-const steps = ["Choose Design", "Select Size", "Apply", "Enjoy"];
+const steps = [
+  ["Choose your set", "Browse the collection and filter by shape, length, colour and price."],
+  ["Select your options", "Pick your colour, shape, length and size, then add the set to your bag."],
+  ["Place your order", "Check out with Cash on Delivery. No account is needed."],
+];
 
-const testimonials = [
-  ["Amelia R.", "The finish is unreal — everyone asks where I get my nails done."],
-  ["Sofia L.", "Took me ten minutes and they lasted two full weeks."],
-  ["Noor K.", "Elegant, comfortable and worth every penny."],
+const trustPoints = [
+  ["Cash on Delivery", "Choose Cash on Delivery at checkout — no card details are entered online."],
+  ["No Account Needed", "Order with a short form: your name, phone number and delivery address."],
+  ["Clear Product Details", "Colour, shape, length and size are shown before you buy."],
+  ["Live Availability", "Options that are out of stock can't be added to your bag."],
 ];
 
 function Home() {
-  const [email, setEmail] = useState("");
   const { data: products = [], isLoading, isError } = useQuery(productsQueryOptions);
-  const bestSellers = products.filter((p) => p.bestSeller);
+  const bySlug = (slug: string) => products.find((p) => p.slug === slug);
+
+  const heroPrimary = bySlug("cloud-pearl") ?? products[0];
+  const heroSecondary = bySlug("midnight-plum") ?? products[1];
+  const momentProduct = bySlug("ruby-gilded") ?? products[2];
+
+  // Featured products first (curated in admin), then the rest, up to four cards.
+  const featuredSets = [
+    ...products.filter((p) => p.bestSeller),
+    ...products.filter((p) => !p.bestSeller),
+  ].slice(0, 4);
 
   return (
     <>
-      <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 md:grid-cols-2 md:py-24">
+      <section className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-12 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-24">
         <div>
           <p className="text-xs uppercase tracking-[0.28em] text-accent-foreground">
-            Handmade in small batches
+            Press-on nail sets
           </p>
-          <h1 className="mt-4 font-display text-4xl leading-tight text-foreground sm:text-6xl">
-            Salon-worthy nails, <em className="not-italic text-accent-foreground">made by hand ✨</em>
+          <h1 className="mt-5 font-display text-5xl leading-[1.05] text-foreground sm:text-6xl lg:text-7xl">
+            Nails,{" "}
+            <em className="not-italic text-accent-foreground">beautifully finished</em>
           </h1>
-          <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
-            Lumière press-on nails bring the polish of a luxury salon to your dressing table —
-            reusable, comfortable and ready in minutes.
+          <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground">
+            Soft nudes, deep jewel tones and fine details. Choose your shape, length and size, and
+            find the set that feels like you.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <Link to="/shop">Shop Now</Link>
+            <Button asChild size="lg" className="h-12 px-8 text-base">
+              <Link to="/shop">Shop the Collection</Link>
             </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link to="/about">Our Story</Link>
+            <Button asChild size="lg" variant="outline" className="h-12 px-8 text-base">
+              <Link to="/about">About VELMORA</Link>
             </Button>
           </div>
         </div>
-        <div className="overflow-hidden rounded-3xl bg-secondary shadow-[var(--shadow-soft)]">
-          <img
-            src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1000&q=75"
-            alt="Manicured press-on nails in a soft nude finish"
-            className="aspect-[4/5] w-full object-cover"
-          />
-        </div>
-      </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-16">
-        <SectionHeading eyebrow="Collections" title="Featured Collections" />
-        <div className="mt-10 grid gap-6 sm:grid-cols-3">
-          {collections.map((c) => (
-            <Link
-              key={c.name}
-              to="/shop"
-              search={{ collection: c.name }}
-              className="group overflow-hidden rounded-2xl"
-            >
+        <div className="relative pb-8">
+          <div className="overflow-hidden rounded-3xl bg-secondary shadow-[var(--shadow-soft)]">
+            {heroPrimary ? (
               <img
-                src={c.image}
-                alt={`${c.name} collection`}
-                loading="lazy"
-                className="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                src={heroPrimary.image}
+                alt={`${heroPrimary.name} press-on nails`}
+                className="aspect-[4/5] w-full object-cover"
               />
-              <div className="pt-3">
-                <h3 className="font-display text-xl">{c.name}</h3>
-                <p className="text-sm text-muted-foreground">{c.blurb}</p>
-              </div>
-            </Link>
-          ))}
+            ) : (
+              <div className="aspect-[4/5] w-full" />
+            )}
+          </div>
+          {heroSecondary && (
+            <div className="absolute bottom-0 left-4 w-2/5 overflow-hidden rounded-2xl border-4 border-background bg-secondary shadow-[var(--shadow-soft)] md:-left-4">
+              <img
+                src={heroSecondary.image}
+                alt={`${heroSecondary.name} press-on nails`}
+                className="aspect-[4/5] w-full object-cover"
+              />
+            </div>
+          )}
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-16">
-        <SectionHeading eyebrow="Loved by you" title="Best Sellers" />
+      <section className="mx-auto max-w-6xl px-5 py-16 md:py-20">
+        <SectionHeading eyebrow="Collections" title="Shop by Collection" />
+        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+          {collections.map((c) => {
+            const rep = products.find((p) => p.collection === c.category);
+            return (
+              <Link
+                key={c.category}
+                to="/shop"
+                search={{ collection: c.category }}
+                className="group block"
+              >
+                <div className="overflow-hidden rounded-2xl bg-secondary">
+                  {rep ? (
+                    <img
+                      src={rep.image}
+                      alt={`${c.category} collection — ${rep.name}`}
+                      loading="lazy"
+                      className="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="aspect-[3/4] w-full" />
+                  )}
+                </div>
+                <h3 className="mt-3 font-display text-xl">{c.category}</h3>
+                <p className="mt-0.5 text-sm leading-snug text-muted-foreground">{c.blurb}</p>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 pb-16 pt-4 md:pb-24">
+        <SectionHeading eyebrow="Handpicked" title="Featured Sets" />
         {isLoading ? (
-          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4 lg:gap-8">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="animate-pulse">
                 <div className="aspect-[4/5] w-full rounded-2xl bg-secondary" />
@@ -119,102 +152,109 @@ function Home() {
           </div>
         ) : isError ? (
           <p className="mt-10 text-center text-sm text-muted-foreground">
-            We couldn't load our nails just now. Please refresh in a moment.
+            We couldn't load the sets just now. Please refresh in a moment.
           </p>
-) : bestSellers.length === 0 ? (
+        ) : featuredSets.length === 0 ? (
           <p className="mt-10 text-center text-sm text-muted-foreground">
-            Our new collection is being crafted — check back very soon.
+            New sets are on the way — please check back soon.
           </p>
         ) : (
-          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {bestSellers.map((p) => (
-              <ProductCard key={p.slug} product={p} />
-            ))}
-          </div>
+          <>
+            <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4 lg:gap-8">
+              {featuredSets.map((p) => (
+                <ProductCard key={p.slug} product={p} />
+              ))}
+            </div>
+            <div className="mt-10 text-center">
+              <Button asChild variant="outline" size="lg">
+                <Link to="/shop">View All Sets</Link>
+              </Button>
+            </div>
+          </>
         )}
       </section>
 
-      <section className="bg-secondary/40 py-16">
+      <section className="bg-secondary/40 py-16 md:py-24">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 md:grid-cols-2 md:gap-16">
+          <div className="overflow-hidden rounded-3xl bg-secondary shadow-[var(--shadow-soft)]">
+            {momentProduct ? (
+              <img
+                src={momentProduct.image}
+                alt={`${momentProduct.name} press-on nails`}
+                loading="lazy"
+                className="aspect-[4/5] w-full object-cover"
+              />
+            ) : (
+              <div className="aspect-[4/5] w-full" />
+            )}
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-[0.28em] text-accent-foreground">The look</p>
+            <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl md:text-5xl">
+              From soft nudes to deep jewel tones
+            </h2>
+            <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
+              Pearl and blush, plum and mauve, ruby with gold detail. Every VELMORA set is defined
+              by its colour, shape and length, so you know exactly what you are choosing.
+            </p>
+            <Button asChild size="lg" variant="outline" className="mt-8">
+              <Link to="/shop">Explore the Sets</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 py-16 md:py-24">
+        <SectionHeading eyebrow="Why VELMORA" title="Made Simple to Choose" />
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {reasons.map(([title, copy]) => (
+            <div key={title} className="card-soft p-7">
+              <h3 className="font-display text-xl">{title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{copy}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 pb-16 md:pb-24">
+        <SectionHeading eyebrow="Simple" title="How It Works" />
+        <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-10">
+          {steps.map(([title, copy], i) => (
+            <li key={title} className="border-t border-border pt-5">
+              <span className="font-display text-3xl text-accent-foreground">0{i + 1}</span>
+              <h3 className="mt-2 font-display text-xl">{title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{copy}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="bg-secondary/40 py-14 md:py-16">
         <div className="mx-auto max-w-6xl px-5">
-          <SectionHeading title="Why Choose Us" />
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-            {reasons.map(([title, copy]) => (
-              <div key={title} className="card-soft p-6">
+          <p className="text-center text-xs uppercase tracking-[0.28em] text-accent-foreground">
+            Ordering with VELMORA
+          </p>
+          <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {trustPoints.map(([title, copy]) => (
+              <div key={title}>
                 <h3 className="font-display text-lg">{title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{copy}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{copy}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-16">
-        <SectionHeading eyebrow="Simple" title="How It Works" />
-        <ol className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((s, i) => (
-            <li key={s} className="card-soft p-6 text-center">
-              <span className="font-display text-3xl text-accent-foreground">0{i + 1}</span>
-              <p className="mt-2 text-sm uppercase tracking-[0.16em]">{s}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-5 py-16">
-        <SectionHeading eyebrow="Kind words" title="Testimonials" />
-        <div className="mt-10 grid gap-6 sm:grid-cols-3">
-          {testimonials.map(([name, quote]) => (
-            <figure key={name} className="card-soft p-6">
-              <blockquote className="font-display text-lg leading-relaxed">“{quote}”</blockquote>
-              <figcaption className="mt-4 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                {name}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-5 py-16">
-        <SectionHeading eyebrow="@lumierenails" title="Follow Along" />
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {products.slice(0, 4).map((p) => (
-            <img
-              key={p.slug}
-              src={p.image}
-              alt={`Instagram preview of ${p.name}`}
-              loading="lazy"
-              className="aspect-square w-full rounded-xl object-cover"
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-3xl px-5 py-16 text-center">
-        <SectionHeading
-          title="Join the List"
-          subtitle="New drops, restocks and 10% off your first set."
-        />
-        <form
-          className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setEmail("");
-            toast("You're on the list", { description: "Welcome to Lumière." });
-          }}
-        >
-          <label className="sr-only" htmlFor="newsletter">
-            Email address
-          </label>
-          <Input
-            id="newsletter"
-            type="email"
-            required
-            placeholder="you@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+      <section className="mx-auto max-w-6xl px-5 py-16 md:py-24">
+        <div className="rounded-3xl bg-secondary px-6 py-14 text-center md:py-20">
+          <SectionHeading
+            title="Find Your Set"
+            subtitle="Explore every colour, shape and length in the VELMORA collection."
           />
-          <Button type="submit">Subscribe</Button>
-        </form>
+          <Button asChild size="lg" className="mt-8 h-12 px-8 text-base">
+            <Link to="/shop">Shop the Collection</Link>
+          </Button>
+        </div>
       </section>
     </>
   );

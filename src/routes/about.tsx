@@ -1,64 +1,84 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/SectionHeading";
+import { productsQueryOptions } from "@/lib/products";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "Our Story | Lumière Nails" },
+      { title: "About | VELMORA" },
       {
         name: "description",
         content:
-          "Meet the founder behind Lumière — a female-owned studio crafting luxury handmade press-on nails.",
+          "VELMORA is a press-on nail brand built around clear colours, shapes and lengths.",
       },
-      { property: "og:title", content: "Our Story | Lumière Nails" },
-      { property: "og:description", content: "A female-owned studio for handmade press-on nails." },
+      { property: "og:title", content: "About | VELMORA" },
+      {
+        property: "og:description",
+        content: "A press-on nail brand built around clear colours, shapes and lengths.",
+      },
     ],
   }),
   component: About,
 });
 
-const values = [
-  ["Craft", "Every set is shaped, painted and cured by hand in small batches."],
-  ["Care", "Kind formulas, comfortable fits and packaging we're proud of."],
-  ["Confidence", "Beautiful nails should feel effortless, never complicated."],
+const pillars = [
+  ["Colour", "From pearl and blush to plum, mauve and ruby, each set has a defined colour and finish."],
+  ["Shape & Length", "Every set comes in one shape and length, shown clearly on its product page."],
+  ["Size", "Choose the size that fits your natural nails from the options offered for each set."],
 ];
 
 function About() {
+  const { data: products = [] } = useQuery(productsQueryOptions);
+  const showcase = products.filter((p) => p.images.length > 0).slice(0, 3);
+
   return (
-    <div className="mx-auto max-w-4xl px-5 py-16">
-      <SectionHeading eyebrow="Founded 2023" title="Our Story" />
-      <img
-        src="https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=1200&q=70"
-        alt="Handmade press-on nails in the Lumière studio"
-        loading="lazy"
-        className="mt-10 aspect-[16/9] w-full rounded-3xl object-cover"
-      />
-      <div className="mt-10 space-y-5 text-sm leading-relaxed text-muted-foreground">
+    <div className="mx-auto max-w-4xl px-5 py-16 md:py-20">
+      <SectionHeading eyebrow="About" title="About VELMORA" />
+
+      <div className="mx-auto mt-10 max-w-2xl space-y-5 text-base leading-relaxed text-muted-foreground">
         <p>
-          Lumière began at a kitchen table with a single nail file and an obsession with detail. Our
-          founder, Layla, wanted the polish of a luxury salon without the appointments, the cost or
-          the damage — so she started making sets by hand for herself, then for friends, then for a
-          growing community of women who wanted the same.
+          VELMORA is a press-on nail brand. Each set is designed around a clear look — a defined
+          colour, finish, shape and length — so choosing is simple.
         </p>
         <p>
-          Today every Lumière set is still shaped, hand-painted and gel-cured in our small studio.
-          Nothing is mass produced, and nothing leaves us unless we'd wear it ourselves.
+          The collection ranges from soft pearl and blush nudes to deep plum, mauve and ruby, with
+          details such as chrome tips and gold accents.
         </p>
       </div>
 
-      <h2 className="mt-14 font-display text-2xl">Our Mission</h2>
-      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-        To make salon-quality nails accessible, reusable and kind to your natural nails — so getting
-        ready feels like a treat, not a task.
-      </p>
+      {showcase.length > 0 && (
+        <div className="mt-12 grid grid-cols-3 gap-3 md:gap-5">
+          {showcase.map((p) => (
+            <img
+              key={p.slug}
+              src={p.image}
+              alt={`${p.name} press-on nails`}
+              loading="lazy"
+              className="aspect-[4/5] w-full rounded-2xl object-cover"
+            />
+          ))}
+        </div>
+      )}
 
-      <div className="mt-12 grid gap-5 sm:grid-cols-3">
-        {values.map(([title, copy]) => (
+      <div className="mt-14 grid gap-5 sm:grid-cols-3">
+        {pillars.map(([title, copy]) => (
           <div key={title} className="card-soft p-6">
-            <h3 className="font-display text-lg">{title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{copy}</p>
+            <h2 className="font-display text-xl">{title}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{copy}</p>
           </div>
         ))}
+      </div>
+
+      <p className="mx-auto mt-12 max-w-2xl text-center text-sm leading-relaxed text-muted-foreground">
+        More about the brand and how it operates will be shared here as VELMORA prepares to open
+        for orders.
+      </p>
+      <div className="mt-8 text-center">
+        <Button asChild size="lg">
+          <Link to="/shop">Shop the Collection</Link>
+        </Button>
       </div>
     </div>
   );

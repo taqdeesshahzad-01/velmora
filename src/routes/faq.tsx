@@ -6,18 +6,18 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { SectionHeading } from "@/components/SectionHeading";
+import { DEMO_MODE } from "@/lib/utils";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "FAQ | Lumière Nails" },
+      { title: "FAQ | VELMORA" },
       {
         name: "description",
-        content:
-          "Answers on shipping, sizing, application, removal, returns and care for Lumière press-on nails.",
+        content: "Answers about sizing, shapes, lengths and ordering with VELMORA.",
       },
-      { property: "og:title", content: "FAQ | Lumière Nails" },
-      { property: "og:description", content: "Shipping, sizing, application, removal and care." },
+      { property: "og:title", content: "FAQ | VELMORA" },
+      { property: "og:description", content: "Sizing, shapes, lengths and ordering." },
     ],
   }),
   component: Faq,
@@ -25,40 +25,41 @@ export const Route = createFileRoute("/faq")({
 
 const faqs: [string, string][] = [
   [
-    "Shipping",
-    "Orders are handmade and dispatched within 3–5 business days. Standard delivery takes 3–7 days; express options are available at checkout.",
+    "How do I choose a size?",
+    "Each product page lists the sizes available for that set. Compare the width of your natural nails at their widest point and choose the closest size. If you are between sizes, the larger size is usually the more comfortable choice.",
   ],
   [
-    "Sizing",
-    "Every set includes 12 sizes. Measure the widest part of each nail in millimetres and size up if you're in between.",
+    "Which shapes and lengths are available?",
+    "Each set comes in a single shape and length, shown on its product page. You can also filter the shop by shape and length.",
   ],
+  ["How many nails are in a set?", "Each set contains 10 nails."],
   [
-    "Application",
-    "Buff, cleanse and dehydrate the nail, apply glue or an adhesive tab, then press firmly for 30 seconds. Ready in under 10 minutes.",
+    "How do I pay?",
+    "Checkout currently offers Cash on Delivery only. No card details are collected on this website.",
   ],
+  ...(DEMO_MODE
+    ? ([
+        [
+          "Can I place a real order?",
+          "Not yet. This website is a portfolio demonstration, so orders placed here are test orders and will not be fulfilled.",
+        ],
+      ] as [string, string][])
+    : []),
   [
-    "Removal",
-    "Soak your hands in warm soapy water for 10–15 minutes and gently lift from the sides with a cuticle stick. Never force a nail off.",
-  ],
-  [
-    "Returns",
-    "For hygiene reasons we can't accept returns on opened sets. Unopened sets can be returned within 14 days of delivery.",
-  ],
-  [
-    "Care",
-    "Avoid prolonged heat and harsh cleaners, wear gloves when washing up, and store your set in its box to reuse it again and again.",
+    "What about delivery, returns and exchanges?",
+    "Delivery areas, timing and charges, along with the returns and exchange policy, have not been finalised yet. They will be published here before real orders open.",
   ],
 ];
 
 function Faq() {
   return (
-    <div className="mx-auto max-w-3xl px-5 py-16">
+    <div className="mx-auto max-w-3xl px-5 py-16 md:py-20">
       <SectionHeading eyebrow="Support" title="Frequently Asked Questions" />
       <Accordion type="single" collapsible className="mt-10">
         {faqs.map(([q, a]) => (
           <AccordionItem key={q} value={q}>
-            <AccordionTrigger className="text-left font-display text-lg">{q}</AccordionTrigger>
-            <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+            <AccordionTrigger className="py-5 text-left font-display text-lg">{q}</AccordionTrigger>
+            <AccordionContent className="text-base leading-relaxed text-muted-foreground">
               {a}
             </AccordionContent>
           </AccordionItem>

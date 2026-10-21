@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -13,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { DemoBanner } from "@/components/DemoBanner";
 import { CartProvider } from "@/lib/cart";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -82,11 +84,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lumière Nails | Luxury Handmade Press-On Nails" },
+      { title: "VELMORA | Press-On Nails" },
       {
         name: "description",
         content:
-          "Luxury handmade press-on nails. Salon-quality, reusable sets crafted in small batches.",
+          "VELMORA press-on nail sets in soft nudes, deep jewel tones and fine details. Choose your shape, length and size.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -124,17 +126,19 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const isAdmin = useLocation({ select: (l) => l.pathname.startsWith("/admin") });
 
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <div className="flex min-h-screen flex-col">
-          <Navbar />
+          {!isAdmin && <DemoBanner />}
+          {!isAdmin && <Navbar />}
           <main className="flex-1">
             {/* Required: nested routes render here. */}
             <Outlet />
           </main>
-          <Footer />
+          {!isAdmin && <Footer />}
         </div>
         <Toaster />
       </CartProvider>

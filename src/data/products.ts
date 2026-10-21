@@ -15,21 +15,24 @@ export type Product = {
 const img = (id: string) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&q=70`;
 
+// Collection tiles on the homepage. `category` must match products.category in Supabase;
+// each tile's image is taken from a real product in that category.
 export const collections = [
   {
-    name: "Bridal",
-    blurb: "Pearls, sheers and forever finishes.",
-    image: img("photo-1636018943673-1ef37f81a2ec"),
+    category: "Everyday Nudes",
+    blurb: "Soft pearl, blush and neutral finishes.",
   },
   {
-    name: "Everyday",
-    blurb: "Nudes and neutrals for daily polish.",
-    image: img("photo-1604654894610-df63bc536371"),
+    category: "French Edit",
+    blurb: "A modern take on the French tip.",
   },
   {
-    name: "Statement",
-    blurb: "Chromes and colour that turn heads.",
-    image: img("photo-1632345031435-8727f6897d53"),
+    category: "Glam Nights",
+    blurb: "Deep plum and mauve for the evening.",
+  },
+  {
+    category: "Bridal & Occasion",
+    blurb: "Rich tones and fine detail for celebrations.",
   },
 ];
 
