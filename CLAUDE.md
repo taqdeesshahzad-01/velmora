@@ -8,7 +8,7 @@ Press-on nail ecommerce site. Lovable-generated codebase — treat existing stru
 - TanStack Query for all data fetching
 - Supabase (`@supabase/supabase-js`) — Postgres + RLS
 - Tailwind CSS v4 + shadcn/ui components (`src/components/ui`)
-- Package manager: **bun** (`bun.lock` is the lockfile — do not generate a `package-lock.json`/`yarn.lock`)
+- Package manager: **npm** (`package-lock.json` is the lockfile — do not add another package manager's lockfile)
 
 ## Structure
 
@@ -28,13 +28,13 @@ Press-on nail ecommerce site. Lovable-generated codebase — treat existing stru
 
 ## Commands
 
-- `bun install` — install dependencies
-- `bun run dev` — start dev server (`vite dev`)
-- `bun run build` — production build (`vite build`)
-- `bun run lint` — ESLint
-- `bun run format` — Prettier write
+- `npm install` — install dependencies
+- `npm run dev` — start dev server (`vite dev`)
+- `npm run build` — production build (`vite build`)
+- `npm run lint` — ESLint
+- `npm run format` — Prettier write
 
-No test suite currently exists. After any change, at minimum run `bun run build` (or `bun run lint` for smaller edits) as the relevant verification.
+No test suite currently exists. After any change, at minimum run `npm run build` (or `npm run lint` for smaller edits) as the relevant verification.
 
 ## Rules
 
